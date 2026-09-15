@@ -126,33 +126,16 @@
   .totline{display:flex;justify-content:space-between;font-size:14px;margin:4px 0;}
   .totline b{font-weight:700;}
   .hint{background:var(--brand-soft);color:#3730a3;border-radius:10px;padding:10px 12px;font-size:12.5px;margin-bottom:10px;}
-  .migrate-banner{background:#fdf1e1;border-bottom:1px solid #f3d9a8;padding:10px 14px;font-size:13px;color:#7c4a03;display:flex;align-items:center;gap:10px;}
-  .migrate-banner b{display:block;font-size:13.5px;margin-bottom:2px;}
-  .migrate-banner .row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
-  .migrate-banner button{border:none;border-radius:8px;padding:7px 12px;font-size:12.5px;font-weight:700;cursor:pointer;}
-  .migrate-banner .go{background:var(--amber);color:#fff;}
-  .migrate-banner .later{background:transparent;color:#7c4a03;text-decoration:underline;padding:7px 4px;}
-  .migrate-banner .x{margin-left:auto;background:transparent;color:#7c4a03;font-size:18px;line-height:1;padding:2px 6px;align-self:flex-start;}
 </style>
 </head>
 <body>
-<div id="migrateBanner" class="migrate-banner" style="display:none">
-  <div style="flex:1">
-    <b>⚠ We're moving hosting soon</b>
-    This app is switching to a new address, and your saved data stays on this device — it won't move by itself. Please back up now so nothing is lost.
-    <div class="row">
-      <button class="go" id="mb_backup">⬇ Back up now</button>
-      <button class="later" id="mb_later">Remind me later</button>
-    </div>
-  </div>
-  <button class="x" id="mb_close" title="Dismiss">×</button>
-</div>
 <header class="app">
   <div class="wrap">
     <div>
       <h1>Kidule</h1>
       <div class="sub" id="headsub">Schedule · classes · fees</div>
     </div>
+
     <button class="iconbtn" id="btnBackupTop" title="Backup / restore">⋯</button>
   </div>
 </header>
@@ -1111,6 +1094,7 @@ document.querySelectorAll("nav.tabbar button").forEach(function(b){b.onclick=fun
 };});
 document.getElementById("btnBackupTop").onclick=function(){
   var h='<h3>Menu</h3><div class="action-list">'+
+    '<button id="m_howto">📖 How to use Kidule</button>'+
     '<button id="m_kid">👀 Read-only week view<span class="sub">A simple, no-editing list of this week — handy to show a child</span></button>'+
     '<button id="m_bk">⬇ Backup to file<span class="sub">Save a copy you can restore later</span></button>'+
     '<button id="m_rs">⬆ Restore from file</button>'+
@@ -1120,12 +1104,27 @@ document.getElementById("btnBackupTop").onclick=function(){
     '<div class="sheet-actions"><button class="btn ghost block" data-close>Close</button></div>';
   openSheet(h);
   sheet.querySelector("[data-close]").onclick=closeSheet;
+  sheet.querySelector("#m_howto").onclick=function(){howToSheet();};
   sheet.querySelector("#m_kid").onclick=function(){kidView();};
   sheet.querySelector("#m_bk").onclick=function(){doBackup();};
   sheet.querySelector("#m_rs").onclick=function(){doRestore();};
   sheet.querySelector("#m_purge").onclick=function(){purgeOldDataSheet();};
   sheet.querySelector("#m_help").onclick=function(){helpSheet();};
 };
+
+function howToSheet(){
+  var h='<h3>📖 How to use Kidule</h3><div class="small" style="line-height:1.6">';
+  h+='<p><b>1. Add a child</b><br>Go to the Classes tab and add each child you want to track.</p>';
+  h+='<p><b>2. Add their classes</b><br>Under each child, add a class — its schedule, and whether you pay per package (prepaid), monthly, or per class (postpaid).</p>';
+  h+='<p><b>3. Track the week</b><br>The Week tab shows every session coming up. Tap a session to mark it attended, cancelled, or moved, right from the card.</p>';
+  h+='<p><b>4. Log payments</b><br>From the Classes tab, tap "Log payment" whenever you pay a fee — Kidule keeps the running balance for you.</p>';
+  h+='<p><b>5. Check the money view</b><br>The Money tab totals what\u2019s been paid and what\u2019s still owed, per child and per class.</p>';
+  h+='<p><b>6. Back up regularly</b><br>Use Menu → Backup to file every so often, especially before switching phones or reinstalling.</p>';
+  h+='</div>';
+  h+='<div class="sheet-actions"><button class="btn ghost block" data-close>Close</button></div>';
+  openSheet(h);
+  sheet.querySelector("[data-close]").onclick=closeSheet;
+}
 
 function helpSheet(){
   var h='<h3>Help / FAQ</h3><div class="small" style="line-height:1.6">';
@@ -1146,39 +1145,10 @@ function helpSheet(){
   sheet.querySelector("[data-close]").onclick=closeSheet;
 }
 
-/* ---------------- migration banner ----------------
-   One-time (snoozable) notice telling testers to back up
-   before the app's hosting address changes. Uses its own
-   localStorage key so it never touches app data or backups. */
-function migrateBannerInit(){
-  var MBK="kidule_migrate_banner_v1";
-  var el=document.getElementById("migrateBanner");
-  if(!el||KID)return;   // never show in kid mode
-  var st=null;
-  try{var raw=localStorage.getItem(MBK);st=raw?JSON.parse(raw):null;}catch(e){}
-  var now=Date.now();
-  if(st&&(st.dismissed||(st.snoozeUntil&&now<st.snoozeUntil)))return;
-  el.style.display="flex";
-  document.getElementById("mb_backup").onclick=function(){
-    doBackup();
-    try{localStorage.setItem(MBK,JSON.stringify({dismissed:true}));}catch(e){}
-    el.style.display="none";
-  };
-  document.getElementById("mb_later").onclick=function(){
-    try{localStorage.setItem(MBK,JSON.stringify({snoozeUntil:now+24*60*60*1000}));}catch(e){}
-    el.style.display="none";
-  };
-  document.getElementById("mb_close").onclick=function(){
-    try{localStorage.setItem(MBK,JSON.stringify({dismissed:true}));}catch(e){}
-    el.style.display="none";
-  };
-}
-
 /* ---------------- boot ---------------- */
 load();
 if(KID)document.body.classList.add("kidmode");
 render();
-migrateBannerInit();
 
 /* offline support */
 if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){});});}
