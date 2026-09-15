@@ -1,0 +1,16 @@
+{
+  "name": "Kidule",
+  "short_name": "Kidule",
+  "description": "Track kids' and adults' extracurricular classes — schedule, attendance and fees.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f5f9",
+  "theme_color": "#4f46e5",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

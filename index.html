@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#4f46e5">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Kidule">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<title>Kidule</title>
+<style>
+  :root{
+    --bg:#f4f5f9; --card:#ffffff; --ink:#1f2430; --muted:#6b7280;
+    --line:#e7e9ef; --brand:#4f46e5; --brand-soft:#eef0ff;
+    --green:#16a34a; --red:#dc2626; --amber:#d97706; --slate:#64748b;
+    --shadow:0 1px 3px rgba(20,24,40,.08),0 1px 2px rgba(20,24,40,.04);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);font-size:16px;line-height:1.4;
+    padding-bottom:78px;-webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:520px;margin:0 auto;padding:0 14px;}
+  header.app{
+    position:sticky;top:0;z-index:20;background:var(--brand);color:#fff;
+    padding:14px 14px 12px;box-shadow:var(--shadow);
+  }
+  header.app .wrap{display:flex;align-items:center;justify-content:space-between;}
+  header.app h1{font-size:18px;margin:0;font-weight:700;}
+  header.app .sub{font-size:12px;opacity:.85;margin-top:2px;}
+  .iconbtn{background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:10px;
+    width:38px;height:38px;font-size:18px;cursor:pointer;display:grid;place-items:center;}
+  h2.section{font-size:14px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);
+    margin:18px 0 8px;font-weight:700;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    box-shadow:var(--shadow);margin-bottom:10px;overflow:hidden;}
+  .card .body{padding:12px 14px;}
+  .row{display:flex;align-items:center;gap:10px;}
+  .spacer{flex:1;}
+  .muted{color:var(--muted);}
+  .small{font-size:13px;}
+  .tiny{font-size:11.5px;}
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:600;
+    background:var(--brand-soft);color:var(--brand);white-space:nowrap;}
+  .pill.green{background:#e7f6ec;color:var(--green);}
+  .pill.red{background:#fdeaea;color:var(--red);}
+  .pill.amber{background:#fdf1e1;color:var(--amber);}
+  .pill.slate{background:#eef1f5;color:var(--slate);}
+  .stripe{width:5px;align-self:stretch;border-radius:6px;}
+  .btn{border:none;border-radius:10px;padding:10px 14px;font-size:15px;font-weight:600;
+    cursor:pointer;background:var(--brand);color:#fff;}
+  .btn.ghost{background:#eef0f5;color:var(--ink);}
+  .btn.line{background:#fff;border:1px solid var(--line);color:var(--ink);}
+  .btn.sm{padding:7px 11px;font-size:13.5px;border-radius:9px;}
+  .btn.block{width:100%;}
+  .btn.danger{background:#fdeaea;color:var(--red);}
+  .weeknav{display:flex;align-items:center;gap:8px;margin:14px 0 6px;}
+  .weeknav .label{flex:1;text-align:center;font-weight:700;}
+  .daygroup{margin-bottom:6px;}
+  .dayhead{display:flex;align-items:center;gap:8px;margin:14px 2px 6px;}
+  .dayhead .dname{font-weight:700;}
+  .dayhead.today .dname{color:var(--brand);}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--brand);}
+  .sess{display:flex;align-items:stretch;gap:10px;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;padding:10px 12px;margin-bottom:8px;box-shadow:var(--shadow);cursor:pointer;}
+  .sess .time{width:64px;font-weight:700;font-size:13.5px;}
+  .sess .who{font-size:12px;color:var(--muted);}
+  .sess.done{opacity:.62;}
+  .sess.moved,.sess.cancelled{opacity:.55;}
+  .sess.moved .nm,.sess.cancelled .nm{text-decoration:line-through;}
+  .empty{color:var(--muted);font-size:14px;padding:8px 2px;}
+  .progress{height:8px;background:#eef0f5;border-radius:999px;overflow:hidden;margin-top:6px;}
+  .progress>i{display:block;height:100%;background:var(--brand);}
+  .progress.low>i{background:var(--red);}
+  .kv{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;margin-top:3px;}
+  .child-tab{display:flex;gap:8px;margin:6px 0 12px;}
+  .child-tab button{flex:1;padding:9px;border-radius:10px;border:1px solid var(--line);
+    background:#fff;font-weight:600;cursor:pointer;font-size:14px;}
+  .child-tab button.on{background:var(--brand);color:#fff;border-color:var(--brand);}
+  .avatar{width:22px;height:22px;border-radius:50%;object-fit:cover;vertical-align:-6px;display:inline-block;}
+  .avatar.lg{width:34px;height:34px;vertical-align:-11px;}
+  .mgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+  .mgrid .dow{text-align:center;font-size:10.5px;color:var(--muted);font-weight:700;padding:2px 0;}
+  .mcell{min-height:54px;border:1px solid var(--line);border-radius:8px;padding:3px 3px 4px;background:#fff;overflow:hidden;}
+  .mcell.out{background:#f7f8fb;opacity:.5;}
+  .mcell.today{border-color:var(--brand);box-shadow:0 0 0 1px var(--brand) inset;}
+  .mcell .dnum{font-size:10.5px;color:var(--muted);font-weight:700;line-height:1.1;}
+  .mdot{display:inline-block;width:7px;height:7px;border-radius:50%;margin:1px;}
+  .mcell .mcount{font-size:9.5px;color:var(--muted);}
+  .joinbtn{text-decoration:none;display:inline-flex;align-items:center;}
+  body.kidmode nav.tabbar{display:none;}
+  body.kidmode #btnBackupTop{display:none;}
+  body.kidmode{padding-bottom:14px;}
+  /* bottom nav */
+  nav.tabbar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);
+    display:flex;z-index:30;padding-bottom:env(safe-area-inset-bottom);}
+  nav.tabbar button{flex:1;border:none;background:none;padding:9px 0 11px;cursor:pointer;color:var(--muted);
+    font-size:11px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:3px;}
+  nav.tabbar button .ic{font-size:20px;}
+  nav.tabbar button.on{color:var(--brand);}
+  /* modal */
+  .overlay{position:fixed;inset:0;background:rgba(15,20,35,.45);z-index:50;display:none;
+    align-items:flex-end;justify-content:center;}
+  .overlay.show{display:flex;}
+  .sheet{background:#fff;width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px 16px 22px;
+    max-height:88vh;overflow:auto;animation:up .18s ease;}
+  @keyframes up{from{transform:translateY(20px);opacity:.6}to{transform:none;opacity:1}}
+  .sheet h3{margin:2px 0 14px;font-size:17px;}
+  label.fld{display:block;margin:10px 0;font-size:13px;color:var(--muted);font-weight:600;}
+  label.fld input,label.fld select,label.fld textarea{
+    width:100%;margin-top:5px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;
+    font-size:16px;color:var(--ink);background:#fff;font-family:inherit;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .slotrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px;}
+  .slotrow select,.slotrow input{padding:9px;border:1px solid var(--line);border-radius:9px;font-size:15px;}
+  .sheet-actions{display:flex;gap:10px;margin-top:16px;}
+  .action-list button{width:100%;text-align:left;padding:14px;border:1px solid var(--line);
+    background:#fff;border-radius:12px;margin-bottom:8px;font-size:15px;font-weight:600;cursor:pointer;}
+  .action-list button .sub{display:block;font-weight:400;font-size:12.5px;color:var(--muted);margin-top:2px;}
+  .totline{display:flex;justify-content:space-between;font-size:14px;margin:4px 0;}
+  .totline b{font-weight:700;}
+  .hint{background:var(--brand-soft);color:#3730a3;border-radius:10px;padding:10px 12px;font-size:12.5px;margin-bottom:10px;}
+  .migrate-banner{background:#fdf1e1;border-bottom:1px solid #f3d9a8;padding:10px 14px;font-size:13px;color:#7c4a03;display:flex;align-items:center;gap:10px;}
+  .migrate-banner b{display:block;font-size:13.5px;margin-bottom:2px;}
+  .migrate-banner .row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+  .migrate-banner button{border:none;border-radius:8px;padding:7px 12px;font-size:12.5px;font-weight:700;cursor:pointer;}
+  .migrate-banner .go{background:var(--amber);color:#fff;}
+  .migrate-banner .later{background:transparent;color:#7c4a03;text-decoration:underline;padding:7px 4px;}
+  .migrate-banner .x{margin-left:auto;background:transparent;color:#7c4a03;font-size:18px;line-height:1;padding:2px 6px;align-self:flex-start;}
+</style>
+</head>
+<body>
+<div id="migrateBanner" class="migrate-banner" style="display:none">
+  <div style="flex:1">
+    <b>⚠ We're moving hosting soon</b>
+    This app is switching to a new address, and your saved data stays on this device — it won't move by itself. Please back up now so nothing is lost.
+    <div class="row">
+      <button class="go" id="mb_backup">⬇ Back up now</button>
+      <button class="later" id="mb_later">Remind me later</button>
+    </div>
+  </div>
+  <button class="x" id="mb_close" title="Dismiss">×</button>
+</div>
+<header class="app">
+  <div class="wrap">
+    <div>
+      <h1>Kidule</h1>
+      <div class="sub" id="headsub">Schedule · classes · fees</div>
+    </div>
+    <button class="iconbtn" id="btnBackupTop" title="Backup / restore">⋯</button>
+  </div>
+</header>
+
+<main class="wrap" id="view"></main>
+
+<nav class="tabbar">
+  <button data-tab="week" class="on"><span class="ic">🗓️</span>Week</button>
+  <button data-tab="classes"><span class="ic">📚</span>Classes</button>
+  <button data-tab="money"><span class="ic">💰</span>Money</button>
+</nav>
+
+<div class="overlay" id="overlay"><div class="sheet" id="sheet"></div></div>
+
+<script>
+"use strict";
+/* ---------------- storage ---------------- */
+var KEY="kidsClassTracker_v1";
+var state=null;
+
+function seed(){return {children:[],classes:[],attendance:[],payments:[],currencies:[],events:[]};}
+function migrate(){if(!state.currencies)state.currencies=[];if(!state.events)state.events=[];}
+function load(){try{var s=localStorage.getItem(KEY);state=s?JSON.parse(s):seed();}catch(e){state=seed();}migrate();save();}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+function uid(){return "id"+Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-3);}
+
+/* ---------------- date utils ---------------- */
+var DAYS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+var DAYSLONG=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+var MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function pad(n){return n<10?"0"+n:""+n;}
+function isoOf(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
+function parseISO(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2]);}
+function addDays(d,n){var x=new Date(d);x.setDate(x.getDate()+n);return x;}
+function weekStart(d){var x=new Date(d);x.setHours(0,0,0,0);var day=x.getDay();return addDays(x,day===0?-6:1-day);}
+function fmtTime(t){if(!t)return"";var p=t.split(":");var h=+p[0];var ap=h<12?"AM":"PM";var hh=h%12;if(hh===0)hh=12;return hh+":"+p[1]+" "+ap;}
+function fmtDateShort(d){return DAYS[d.getDay()]+" "+d.getDate()+" "+MON[d.getMonth()];}
+function money(a,c){if(a==null||a==="")return"—";return (c?c+" ":"")+Number(a).toLocaleString();}
+function toMin(t){if(!t)return null;var p=t.split(":");return (+p[0])*60+(+p[1]);}
+function durMin(a,b){var x=toMin(a),y=toMin(b);return (x!=null&&y!=null&&y>x)?y-x:null;}
+function durLabel(m){var h=Math.floor(m/60),mm=m%60;return h?(h+"h"+(mm?mm:"")):(mm+"m");}
+
+/* ---------------- lookups ---------------- */
+function childById(id){return state.children.filter(function(c){return c.id===id;})[0];}
+function classById(id){return state.classes.filter(function(c){return c.id===id;})[0];}
+function getAtt(classId,date){return state.attendance.filter(function(a){return a.classId===classId&&a.date===date;})[0]||null;}
+function upsertAtt(classId,date,patch){
+  var a=getAtt(classId,date);
+  if(!a){a={id:uid(),classId:classId,date:date};state.attendance.push(a);}
+  for(var k in patch)a[k]=patch[k];
+  save();return a;
+}
+function consumedCount(classId,cyc){
+  var c=classById(classId);var charge=c&&c.chargeOnStudentCancel;
+  var base=(!cyc&&c&&c.openingTaken)?(+c.openingTaken):0;
+  return base+state.attendance.filter(function(a){
+    if(a.classId!==classId)return false;
+    if(cyc&&(!a.date||a.date<cyc))return false;
+    return a.status==="attended"||(charge&&a.status==="missed");
+  }).length;
+}
+function takenCount(classId){return consumedCount(classId,null);}
+
+/* money math for a class */
+function classMoney(c){
+  var cyc=((c.feeType==="prepaid"||c.feeType==="postpaid")&&c.cycleStart)?c.cycleStart:null;
+  var pays=state.payments.filter(function(p){return p.classId===c.id&&(!cyc||(p.date&&p.date>=cyc));});
+  var paidByCur={};var prepaidClasses=0,postpaidClasses=0;
+  pays.forEach(function(p){
+    paidByCur[p.currency]=(paidByCur[p.currency]||0)+(+p.amount||0);
+    if(p.type==="prepaid")prepaidClasses+=(+p.classesCovered||0);
+    else postpaidClasses+=(+p.classesCovered||0);
+  });
+  var taken=consumedCount(c.id,cyc);
+  var r={taken:taken,paidByCur:paidByCur,prepaidClasses:prepaidClasses,postpaidClasses:postpaidClasses,outByCur:{},cycleStart:cyc};
+  if(c.feeType==="prepaid"){
+    var total=cyc?(c.cycleSize||prepaidClasses):prepaidClasses;
+    r.prepaidClasses=total;
+    r.remaining=total-taken;
+    var over=Math.max(0,taken-total);
+    if(c.perClassFee&&c.currency&&over>0)r.outByCur[c.currency]=over*c.perClassFee;
+  }else if(c.feeType==="postpaid"){
+    var unpaid=Math.max(0,taken-postpaidClasses);
+    r.unpaid=unpaid;
+    if(c.perClassFee&&c.currency&&unpaid>0)r.outByCur[c.currency]=unpaid*c.perClassFee;
+  }
+  return r;
+}
+
+/* ---------------- rendering ---------------- */
+var current={tab:"week",weekStart:isoOf(weekStart(new Date())),monthAnchor:isoOf(new Date()),moneyChild:"all",classChild:"all"};
+var KID=((location.search+location.hash).toLowerCase().indexOf("kid")>=0)||(location.pathname.toLowerCase().indexOf("/kid")>=0)||(function(){try{return localStorage.getItem("ct_kidlock")==="1";}catch(e){return false;}})();
+
+function render(){
+  var v=document.getElementById("view");
+  if(KID){v.innerHTML=renderKid();bindView();return;}
+  if(current.tab==="week")v.innerHTML=renderWeek();
+  else if(current.tab==="classes")v.innerHTML=renderClasses();
+  else v.innerHTML=renderMoney();
+  bindView();
+}
+
+/* ----- WEEK ----- */
+function weekSessions(ws){
+  var start=parseISO(ws);var byDay=[[],[],[],[],[],[],[]]; // index 0..6 = Mon..Sun
+  for(var i=0;i<7;i++){
+    var date=addDays(start,i);var diso=isoOf(date);var js=date.getDay();
+    state.classes.forEach(function(c){
+      if(!c.active)return;
+      (c.slots||[]).forEach(function(s){
+        if(s.day===js){
+          var att=getAtt(c.id,diso);
+          byDay[i].push({classId:c.id,date:diso,time:s.time,end:s.end,status:att?att.status:"scheduled",att:att,kind:"recurring"});
+        }
+      });
+    });
+  }
+  // extra / moved-to sessions
+  state.attendance.forEach(function(a){
+    if(!a.isExtra)return;
+    var d=parseISO(a.date);var idx=Math.floor((d-start)/86400000);
+    if(idx>=0&&idx<7)byDay[idx].push({classId:a.classId,date:a.date,time:a.time||"",status:a.status||"scheduled",att:a,kind:"extra"});
+  });
+  (state.events||[]).forEach(function(ev){
+    var d=parseISO(ev.date);var idx=Math.floor((d-start)/86400000);
+    if(idx>=0&&idx<7)byDay[idx].push({kind:"event",event:ev,time:ev.time||""});
+  });
+  byDay.forEach(function(arr){arr.sort(function(x,y){return (x.time||"").localeCompare(y.time||"");});});
+  return byDay;
+}
+function renderWeek(){
+  var ws=current.weekStart;var start=parseISO(ws);var end=addDays(start,6);
+  var byDay=weekSessions(ws);var todayIso=isoOf(new Date());
+  var h="";
+  h+='<div class="weeknav">'+
+       '<button class="btn ghost sm" data-week="-1">‹</button>'+
+       '<div class="label">'+start.getDate()+" "+MON[start.getMonth()]+" – "+end.getDate()+" "+MON[end.getMonth()]+'</div>'+
+       '<button class="btn ghost sm" data-week="1">›</button></div>';
+  h+='<div class="row" style="margin-bottom:6px"><button class="btn line sm" data-week="0">This week</button>'+
+     '<span class="spacer"></span><button class="btn sm" id="addSess">+ One-off class</button></div>';
+  for(var i=0;i<7;i++){
+    var date=addDays(start,i);var diso=isoOf(date);var isToday=diso===todayIso;
+    h+='<div class="daygroup"><div class="dayhead'+(isToday?" today":"")+'">'+
+       (isToday?'<span class="dot"></span>':"")+
+       '<span class="dname">'+DAYSLONG[date.getDay()]+'</span>'+
+       '<span class="muted small">'+date.getDate()+" "+MON[date.getMonth()]+(isToday?" · Today":"")+'</span></div>';
+    if(byDay[i].length===0){h+='<div class="empty">No classes</div>';}
+    else{
+      byDay[i].forEach(function(s){
+        if(s.kind==="event"){var ev=s.event;var est=ev.status||"scheduled";
+          var ecls="sess"+(est==="attended"?" done":"")+(est==="cancelled"?" cancelled":"");
+          var ebadge=est==="attended"?'<span class="pill green">✓ Attended</span>':est==="cancelled"?'<span class="pill red">Cancelled</span>':'<span class="pill slate">One-time</span>';
+          h+='<div class="'+ecls+'" data-open-event="'+ev.id+'"><div class="stripe" style="background:'+(ev.color||"#8b5cf6")+'"></div>'+
+             '<div class="time">'+(ev.time?fmtTime(ev.time):"—")+'</div>'+
+             '<div style="flex:1"><div class="nm" style="font-weight:600">'+esc(ev.title)+'</div>'+
+             (ev.note?'<div class="tiny muted">📝 '+esc(ev.note)+'</div>':"")+'</div>'+
+             '<div>'+ebadge+'</div></div>';
+          return;}
+        var c=classById(s.classId);var ch=childById(c.childId);
+        var cls="sess"+(s.status==="attended"?" done":"")+(s.status==="moved"?" moved":"")+(s.status==="cancelled"?" cancelled":"")+(s.status==="missed"?" cancelled":"");
+        var badge="";
+        if(s.status==="attended")badge='<span class="pill green">✓ Attended</span>';
+        else if(s.status==="cancelled")badge='<span class="pill red">Class off</span>';
+        else if(s.status==="missed")badge='<span class="pill amber">Absent</span>';
+        else if(s.status==="moved")badge='<span class="pill amber">Moved'+(s.att&&s.att.movedTo?" → "+fmtDateShort(parseISO(s.att.movedTo)):"")+'</span>';
+        else badge='<span class="pill slate">Scheduled</span>';
+        var moveTag=(s.kind==="extra"&&s.att&&s.att.movedFrom)?'<span class="tiny muted"> · moved here</span>':"";
+        var noteTag=(s.att&&s.att.note)?'<div class="tiny muted">📝 '+esc(s.att.note)+'</div>':"";
+        var quick=(c.link?'<a class="btn sm joinbtn" data-stop href="'+esc(c.link)+'" target="_blank" rel="noopener">Join</a>':"")+
+                  (c.location?'<a class="btn line sm joinbtn" data-stop href="'+mapUrl(c.location)+'" target="_blank" rel="noopener">📍</a>':"");
+        var _dm=durMin(s.time,s.end);
+        var _mh=_dm?' style="min-height:'+Math.max(56,Math.round(30+_dm*0.5))+'px"':"";
+        h+='<div class="'+cls+'"'+_mh+' data-open-sess="'+s.classId+'|'+s.date+'|'+s.time+'|'+s.kind+'">'+
+             '<div class="stripe" style="background:'+c.color+'"></div>'+
+             '<div class="time">'+(s.time?fmtTime(s.time):"—")+(s.end?'<div class="tiny muted" style="font-weight:400">'+fmtTime(s.end)+'</div>':"")+'</div>'+
+             '<div style="flex:1"><div class="nm" style="font-weight:600">'+esc(c.name)+(_dm?' <span class="tiny muted">· '+durLabel(_dm)+'</span>':"")+moveTag+'</div>'+
+               '<div class="who">'+childIcon(ch)+" "+esc(ch.name)+'</div>'+noteTag+'</div>'+
+             (quick?'<div class="row" style="gap:6px;flex:0 0 auto">'+quick+'</div>':"")+
+             '<div>'+badge+'</div></div>';
+      });
+    }
+    h+='</div>';
+  }
+  return h;
+}
+
+/* ----- CLASSES ----- */
+function renderClasses(){
+  var h=childTabs("classChild");
+  var kids=current.classChild==="all"?state.children:state.children.filter(function(c){return c.id===current.classChild;});
+  kids.forEach(function(ch){
+    var cls=state.classes.filter(function(c){return c.childId===ch.id;});
+    h+='<h2 class="section" style="display:flex;align-items:center;gap:6px">'+childIcon(ch)+" "+esc(ch.name)+(childAge(ch)!==""?" · "+childAge(ch)+"y":"")+" · "+cls.length+" classes"+'<button class="btn line sm" data-edit-child="'+ch.id+'" style="margin-left:auto;padding:3px 9px" title="Edit person">✎</button></h2>';
+    cls.forEach(function(c){h+=classCard(c);});
+    h+='<button class="btn line block sm" data-add-class="'+ch.id+'" style="margin:2px 0 8px">+ Add a class for '+esc(ch.name)+'</button>';
+  });
+  h+='<button class="btn ghost block sm" id="addChild" style="margin-top:6px">+ Add a person (adult or child)</button>';
+  h+='<div style="height:8px"></div>';
+  h+='<div class="row" style="gap:8px"><button class="btn line sm" id="btnBackup">⬇ Backup</button>'+
+     '<button class="btn line sm" id="btnRestore">⬆ Restore</button>'+
+     '<button class="btn line sm" id="btnReset" style="margin-left:auto;color:#dc2626">Reset data</button></div>';
+  return h;
+}
+function classCard(c){
+  var m=classMoney(c);var sched=(c.slots&&c.slots.length)?c.slots.map(function(s){return DAYS[s.day]+" "+fmtTime(s.time)+(s.end?"–"+fmtTime(s.end):"");}).join(" · "):"No fixed schedule";
+  var feeBadge=c.feeType==="free"?'<span class="pill green">Free</span>':
+    c.feeType==="prepaid"?'<span class="pill">Prepaid'+(c.currency?" · "+c.currency:"")+'</span>':
+    c.feeType==="monthly"?'<span class="pill">Monthly'+(c.currency?" · "+c.currency:"")+'</span>':
+    '<span class="pill amber">Postpaid'+(c.currency?" · "+c.currency:"")+'</span>';
+  var h='<div class="card"'+(c.active===false?' style="opacity:.6"':"")+'><div class="body">';
+  h+='<div class="row"><div class="stripe" style="background:'+c.color+';min-height:26px"></div>'+
+     '<div style="flex:1"><div style="font-weight:700;font-size:16px">'+esc(c.name)+(c.active===false?' <span class="pill amber">Paused</span>':"")+'</div>'+
+     '<div class="small muted">'+esc(sched)+'</div></div>'+feeBadge+'</div>';
+  // counters
+  if(c.feeType==="prepaid"){
+    if(m.prepaidClasses>0){
+      var pct=Math.max(0,Math.min(100,Math.round(m.remaining/m.prepaidClasses*100)));
+      var low=m.remaining<=1;
+      h+='<div class="kv"><span>Classes taken</span><b>'+(m.cycleStart?m.taken+" / "+m.prepaidClasses:(""+m.taken))+'</b></div>';
+      h+='<div class="progress'+(low?" low":"")+'"><i style="width:'+pct+'%"></i></div>';
+      h+='<div class="small '+(m.remaining<=0?"":"muted")+'" style="margin-top:5px'+(m.remaining<=0?";color:#dc2626;font-weight:600":"")+'">'+
+         (m.remaining>0?m.remaining+" classes left":(m.remaining===0?"Package finished — renew":Math.abs(m.remaining)+" classes over package — renew"))+'</div>';
+      if(m.cycleStart)h+='<div class="tiny muted" style="margin-top:4px">Current pack started '+fmtDateShort(parseISO(m.cycleStart))+'</div>';
+    }else{
+      h+='<div class="kv"><span>Classes taken</span><b>'+m.taken+'</b></div>';
+      h+='<div class="small muted" style="margin-top:4px">No prepaid package logged yet — tap “Log payment”.</div>';
+    }
+  }else if(c.feeType==="postpaid"){
+    h+='<div class="kv"><span>Classes taken</span><b>'+m.taken+'</b></div>';
+    h+='<div class="kv"><span>Unpaid so far</span><b'+(m.unpaid>0?' style="color:#d97706"':"")+'>'+m.unpaid+
+       (c.perClassFee&&c.currency&&m.unpaid>0?" · ≈ "+money(m.unpaid*c.perClassFee,c.currency):"")+'</b></div>';
+    if(m.cycleStart)h+='<div class="tiny muted" style="margin-top:4px">Counting since '+fmtDateShort(parseISO(m.cycleStart))+'</div>';
+  }else if(c.feeType==="monthly"){
+    h+='<div class="kv"><span>Fee</span><b>'+((c.perClassFee&&c.currency)?money(c.perClassFee,c.currency)+" / month":"Monthly")+'</b></div>';
+  }else{
+    h+='<div class="kv"><span>Classes taken</span><b>'+m.taken+'</b></div>';
+  }
+  if(c.notes)h+='<div class="tiny muted" style="margin-top:6px">'+esc(c.notes)+'</div>';
+  if(c.loginInfo)h+='<div class="tiny muted" style="margin-top:6px">🔑 '+esc(c.loginInfo)+'</div>';
+  if(c.location)h+='<div class="tiny muted" style="margin-top:4px">📍 '+esc(c.location)+'</div>';
+  if(c.payMode)h+='<div class="tiny muted" style="margin-top:4px">💳 '+esc(c.payMode)+'</div>';
+  h+='<div class="row" style="margin-top:10px;gap:8px;flex-wrap:wrap">'+
+     '<button class="btn ghost sm" data-edit-class="'+c.id+'">Edit</button>'+
+     ((c.feeType==="prepaid"||c.feeType==="postpaid")?'<button class="btn line sm" data-newpack="'+c.id+'">'+(c.feeType==="prepaid"?"Start new pack":"Reset count")+'</button>':"")+
+     (c.active===false?'<button class="btn sm" data-reactivate="'+c.id+'">Resume</button>':"")+
+     (c.link?'<a class="btn line sm joinbtn" href="'+esc(c.link)+'" target="_blank" rel="noopener">Join</a>':"")+
+     (c.location?'<a class="btn line sm joinbtn" href="'+mapUrl(c.location)+'" target="_blank" rel="noopener">📍 Directions</a>':"")+
+     (c.feeType!=="free"?'<button class="btn line sm" data-pay-class="'+c.id+'">Log payment</button>':"")+
+     ((c.slots&&c.slots.length===0&&c.active!==false)?'<button class="btn sm" data-quick-attend="'+c.id+'">+ Mark a class</button>':"")+
+     '</div>';
+  h+='</div></div>';
+  return h;
+}
+
+/* ----- MONEY ----- */
+function renderMoney(){
+  var h='<div class="hint">Fees stay in their own currency. Prepaid shows credits left; postpaid shows what you still owe. Log a payment from any class.</div>';
+  h+=childTabs("moneyChild");
+  h+='<button class="btn line block sm" id="spendReport" style="margin:0 0 10px">📊 Spending report (year totals by child & class)</button>';
+  // currency totals
+  var paid={},out={};
+  var kids=current.moneyChild==="all"?state.children:state.children.filter(function(c){return c.id===current.moneyChild;});
+  var kidIds=kids.map(function(k){return k.id;});
+  state.classes.filter(function(c){return kidIds.indexOf(c.childId)>=0;}).forEach(function(c){
+    var m=classMoney(c);
+    for(var cur in m.paidByCur){if(cur)paid[cur]=(paid[cur]||0)+m.paidByCur[cur];}
+    for(var cu in m.outByCur){if(cu)out[cu]=(out[cu]||0)+m.outByCur[cu];}
+  });
+  function fmtTot(obj){var ks=Object.keys(obj);if(!ks.length)return "—";return ks.map(function(k){return k+" "+Number(obj[k]).toLocaleString();}).join(" · ");}
+  h+='<div class="card"><div class="body">';
+  h+='<div style="font-weight:700;margin-bottom:6px">Totals</div>';
+  h+='<div class="totline"><span>Paid so far</span><b>'+fmtTot(paid)+'</b></div>';
+  h+='<div class="totline"><span>Estimated outstanding</span><b style="color:#d97706">'+fmtTot(out)+'</b></div>';
+  h+='<div class="tiny muted" style="margin-top:4px">Outstanding excludes classes where the per-class fee isn’t set yet.</div>';
+  h+='</div></div>';
+  // per class
+  kids.forEach(function(ch){
+    h+='<h2 class="section">'+childIcon(ch)+" "+esc(ch.name)+'</h2>';
+    state.classes.filter(function(c){return c.childId===ch.id;}).forEach(function(c){
+      var m=classMoney(c);
+      h+='<div class="card"><div class="body">';
+      h+='<div class="row"><div class="stripe" style="background:'+c.color+';min-height:22px"></div>'+
+         '<div style="flex:1;font-weight:700">'+esc(c.name)+'</div>';
+      h+=(c.feeType==="free"?'<span class="pill green">Free</span>':'<span class="pill '+(c.feeType==="postpaid"?"amber":"")+'">'+c.feeType+(c.currency?" · "+c.currency:"")+'</span>')+'</div>';
+      if(c.feeType==="free"){h+='<div class="small muted" style="margin-top:6px">No fees.</div>';}
+      else{
+        var paidStr=Object.keys(m.paidByCur).length?Object.keys(m.paidByCur).map(function(cu){return money(m.paidByCur[cu],cu);}).join(" · "):"Nothing logged";
+        h+='<div class="kv" style="margin-top:6px"><span>Paid</span><b>'+paidStr+'</b></div>';
+        if(c.feeType==="prepaid"){
+          h+='<div class="kv"><span>Credits left</span><b'+(m.remaining<=1?' style="color:#dc2626"':"")+'>'+(m.prepaidClasses>0?(m.cycleStart?m.remaining+" / "+m.prepaidClasses:(""+m.remaining)):"—")+'</b></div>';
+        }else if(c.feeType==="monthly"){
+          h+='<div class="kv"><span>Monthly fee</span><b>'+((c.perClassFee&&c.currency)?money(c.perClassFee,c.currency):"—")+'</b></div>';
+        }else{
+          h+='<div class="kv"><span>Unpaid classes</span><b'+(m.unpaid>0?' style="color:#d97706"':"")+'>'+m.unpaid+(c.perClassFee&&c.currency&&m.unpaid>0?" · ≈ "+money(m.unpaid*c.perClassFee,c.currency):"")+'</b></div>';
+        }
+      }
+      if(c.payMode)h+='<div class="tiny muted" style="margin-top:6px">💳 '+esc(c.payMode)+'</div>';
+      h+='<div class="row" style="margin-top:10px;gap:8px">'+
+         (c.feeType!=="free"?'<button class="btn sm" data-pay-class="'+c.id+'">+ Log payment</button>':"")+
+         '<button class="btn line sm" data-history="'+c.id+'">History</button></div>';
+      h+='</div></div>';
+    });
+  });
+  return h;
+}
+
+function childTabs(field){
+  var h='<div class="child-tab"><button data-childfilter="'+field+'|all" class="'+(current[field]==="all"?"on":"")+'">All</button>';
+  state.children.forEach(function(c){
+    h+='<button data-childfilter="'+field+"|"+c.id+'" class="'+(current[field]===c.id?"on":"")+'">'+childIcon(c)+" "+esc(c.name)+'</button>';
+  });
+  h+='</div>';return h;
+}
+function esc(s){return (""+(s==null?"":s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+/* ---------------- helpers: currency, child icon, whatsapp ---------------- */
+function curList(){return state.currencies||[];}
+function currencyOptions(sel,blank){
+  var o=blank?'<option value=""'+(!sel?" selected":"")+'>—</option>':"";
+  o+=curList().map(function(cur){return '<option'+(cur===sel?" selected":"")+'>'+esc(cur)+'</option>';}).join("");
+  o+='<option value="__add">＋ Add new currency…</option>';
+  return o;
+}
+function addCurrencyPrompt(){
+  var v=prompt("New currency code or symbol (e.g. USD, GBP, ₹):");
+  if(v==null)return null;v=v.trim();if(!v)return null;
+  if(!state.currencies)state.currencies=["AED","INR"];
+  if(curList().indexOf(v)<0){state.currencies.push(v);save();}
+  return v;
+}
+function childIcon(ch){
+  if(!ch)return "🧒";
+  if(ch.photo)return '<img class="avatar" src="'+ch.photo+'" alt="">';
+  var ad=ch.type==="adult";
+  if(ch.gender==="female")return ad?"👩":"👧";
+  if(ch.gender==="male")return ad?"👨":"👦";
+  if(ch.gender==="girl")return "👧";
+  if(ch.gender==="boy")return "👦";
+  return ad?"🧑":(ch.emoji||"🧒");
+}
+function childAge(ch){
+  if(ch&&ch.dob){var b=parseISO(ch.dob),t=new Date();var a=t.getFullYear()-b.getFullYear();
+    var m=t.getMonth()-b.getMonth();if(m<0||(m===0&&t.getDate()<b.getDate()))a--;return a>=0?a:"";}
+  return (ch&&(ch.age===0||ch.age))?ch.age:"";
+}
+function resizeImage(file,max,cb){
+  var rd=new FileReader();
+  rd.onload=function(){var img=new Image();img.onload=function(){
+    var w=img.width,h=img.height,sc=Math.min(max/w,max/h,1);
+    var cw=Math.round(w*sc),chh=Math.round(h*sc);
+    var cv=document.createElement("canvas");cv.width=cw;cv.height=chh;
+    cv.getContext("2d").drawImage(img,0,0,cw,chh);
+    cb(cv.toDataURL("image/jpeg",0.82));
+  };img.src=rd.result;};
+  rd.readAsDataURL(file);
+}
+function waText(t){window.open("https://wa.me/?text="+encodeURIComponent(t),"_blank");}
+function mapUrl(q){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);}
+function waClassSession(classId,date,time){
+  var c=classById(classId),ch=childById(c.childId),d=parseISO(date);
+  var t=ch.name+" has "+c.name+" on "+DAYSLONG[d.getDay()]+" "+d.getDate()+" "+MON[d.getMonth()]+
+        (time?" at "+fmtTime(time):"")+"."+(c.link?"\nJoin: "+c.link:"");
+  waText(t);
+}
+function waAttendedLog(classId){
+  var c=classById(classId),ch=childById(c.childId);
+  var cyc=((c.feeType==="prepaid"||c.feeType==="postpaid")&&c.cycleStart)?c.cycleStart:null;
+  var recs=state.attendance.filter(function(a){return a.classId===classId&&a.status==="attended"&&(!cyc||(a.date&&a.date>=cyc));})
+    .sort(function(x,y){return x.date.localeCompare(y.date);});
+  var base=(!cyc&&c.openingTaken)?+c.openingTaken:0;
+  var lines=recs.map(function(a,i){var d=parseISO(a.date);return (base+i+1)+". "+DAYS[d.getDay()]+" "+d.getDate()+" "+MON[d.getMonth()];});
+  var total=base+recs.length;
+  var t="Attendance log — "+ch.name+" · "+c.name+(cyc?" (current pack, since "+fmtDateShort(parseISO(cyc))+")":"")+"\nTotal classes attended: "+total+
+        (base?" (incl. "+base+" carried over)":"")+(lines.length?"\n\n"+lines.join("\n"):"");
+  waText(t);
+}
+
+/* ----- read-only kid view ----- */
+function kidView(){
+  var start=weekStart(new Date());var todayIso=isoOf(new Date());
+  var byDay=weekSessions(isoOf(start));var any=false;
+  var h='<h3>This week’s classes</h3>';
+  for(var i=0;i<7;i++){
+    var date=addDays(start,i);var diso=isoOf(date);
+    if(diso<todayIso)continue;
+    var list=byDay[i].filter(function(s){return s.status!=="cancelled"&&s.status!=="moved";});
+    if(!list.length)continue;any=true;
+    h+='<div class="dayhead"><span class="dname">'+DAYSLONG[date.getDay()]+'</span><span class="muted small">'+date.getDate()+" "+MON[date.getMonth()]+(diso===todayIso?" · Today":"")+'</span></div>';
+    list.forEach(function(s){var c=classById(s.classId);var ch=childById(c.childId);
+      h+='<div class="sess" style="cursor:default"><div class="stripe" style="background:'+c.color+'"></div>'+
+         '<div class="time">'+(s.time?fmtTime(s.time):"—")+'</div><div style="flex:1">'+
+         '<div style="font-weight:600">'+esc(c.name)+'</div><div class="who">'+childIcon(ch)+" "+esc(ch.name)+'</div>'+
+         (c.loginInfo?'<div class="tiny muted">🔑 '+esc(c.loginInfo)+'</div>':"")+
+         (c.location?'<div class="tiny muted">📍 '+esc(c.location)+'</div>':"")+'</div>'+
+         (c.link?'<a class="btn sm joinbtn" href="'+esc(c.link)+'" target="_blank" rel="noopener">Join</a>':"")+
+         (c.location?'<a class="btn line sm joinbtn" href="'+mapUrl(c.location)+'" target="_blank" rel="noopener">📍</a>':"")+'</div>';
+    });
+  }
+  if(!any)h+='<div class="empty">No more classes this week 🎉</div>';
+  h+='<div class="sheet-actions"><button class="btn ghost block" data-close>Close</button></div>';
+  openSheet(h);
+  sheet.querySelector("[data-close]").onclick=closeSheet;
+}
+
+/* ---------------- modal helpers ---------------- */
+var overlay=document.getElementById("overlay"),sheet=document.getElementById("sheet");
+function openSheet(html){sheet.innerHTML=html;overlay.classList.add("show");}
+function closeSheet(){overlay.classList.remove("show");sheet.innerHTML="";}
+overlay.addEventListener("click",function(e){if(e.target===overlay)closeSheet();});
+
+/* session action sheet */
+function sessionActions(classId,date,time,kind){
+  var c=classById(classId);var ch=childById(c.childId);var att=getAtt(classId,date);
+  var status=att?att.status:"scheduled";var d=parseISO(date);
+  var h='<h3>'+esc(c.name)+' · '+childIcon(ch)+' '+esc(ch.name)+'</h3>';
+  h+='<div class="muted small" style="margin-top:-8px;margin-bottom:12px">'+DAYSLONG[d.getDay()]+", "+d.getDate()+" "+MON[d.getMonth()]+(time?" · "+fmtTime(time):"")+'</div>';
+  h+='<div class="action-list">';
+  h+='<button data-sa="attend">✅ Mark attended<span class="sub">Counts toward classes taken</span></button>';
+  h+='<button data-sa="cancel">🚫 Class cancelled by teacher<span class="sub">Class didn’t run — not counted</span></button>';
+  h+='<button data-sa="missed">🙅 We cancelled / child absent<span class="sub">Counted only if this class charges for it</span></button>';
+  h+='<button data-sa="move">↔️ Move to another day<span class="sub">Reschedule this week</span></button>';
+  h+='<button data-sa="note">📝 Add / edit note</button>';
+  h+='<button data-sa="whatsapp">💬 Share on WhatsApp<span class="sub">Message a parent/guardian about this class</span></button>';
+  if(status!=="scheduled")h+='<button data-sa="reset">↩️ Reset to scheduled</button>';
+  if(kind==="extra")h+='<button data-sa="delete" style="color:#dc2626">🗑️ Delete this session</button>';
+  h+='</div>';
+  h+='<div class="sheet-actions"><button class="btn ghost block" data-close>Close</button></div>';
+  openSheet(h);
+  sheet.querySelectorAll("[data-sa]").forEach(function(b){
+    b.onclick=function(){
+      var a=b.getAttribute("data-sa");
+      if(a==="attend"){upsertAtt(classId,date,{status:"attended",time:time});closeSheet();render();}
+      else if(a==="cancel"){upsertAtt(classId,date,{status:"cancelled",time:time});closeSheet();render();}
+      else if(a==="missed"){upsertAtt(classId,date,{status:"missed",time:time});closeSheet();render();}
+      else if(a==="reset"){upsertAtt(classId,date,{status:"scheduled"});closeSheet();render();}
+      else if(a==="note"){
+        var cur=att&&att.note?att.note:"";var n=prompt("Note for this session:",cur);
+        if(n!==null){upsertAtt(classId,date,{note:n,time:time});closeSheet();render();}
+      }
+      else if(a==="delete"){
+        state.attendance=state.attendance.filter(function(x){return !(x.classId===classId&&x.date===date&&x.isExtra);});
+        save();closeSheet();render();
+      }
+      else if(a==="whatsapp"){closeSheet();waClassSession(classId,date,time);}
+      else if(a==="move"){moveSession(classId,date,time);}
+    };
+  });
+  sheet.querySelector("[data-close]").onclick=closeSheet;
+}
+function moveSession(classId,fromDate,fromTime){
+  var c=classById(classId);
+  var h='<h3>Move '+esc(c.name)+'</h3>';
+  h+='<label class="fld">New date<input type="date" id="mvDate" value="'+fromDate+'"></label>';
+  h+='<label class="fld">New time<input type="time" id="mvTime" value="'+(fromTime||"")+'"></label>';
+  h+='<div class="sheet-actions"><button class="btn ghost" data-close>Back</button><button class="btn" id="mvSave" style="flex:1">Move session</button></div>';
+  openSheet(h);
+  sheet.querySelector("[data-close]").onclick=function(){sessionActions(classId,fromDate,fromTime,getAtt(classId,fromDate)&&getAtt(classId,fromDate).isExtra?"extra":"recurring");};
+  sheet.querySelector("#mvSave").onclick=function(){
+    var nd=document.getElementById("mvDate").value,nt=document.getElementById("mvTime").value;
+    if(!nd){alert("Pick a date");return;}
+    upsertAtt(classId,fromDate,{status:"moved",movedTo:nd,time:fromTime});
+    state.attendance.push({id:uid(),classId:classId,date:nd,time:nt,status:"scheduled",isExtra:true,movedFrom:fromDate});
+    save();closeSheet();render();
+  };
+}
+
+/* add ad-hoc session */
+function addSessionSheet(presetClassId){
+  var classesOpts=state.classes.filter(function(c){return c.active;}).map(function(c){
+    var ch=childById(c.childId);return '<option value="'+c.id+'"'+(c.id===presetClassId?" selected":"")+'>'+esc(ch.name)+" – "+esc(c.name)+'</option>';
+  }).join("");
+  var h='<h3>Add to schedule</h3>';
+  h+='<label class="fld">What is it?<select id="asType"><option value="class">Extra session of an existing class</option><option value="event">One-time workshop / activity</option></select></label>';
+  h+='<div id="asClassBlock">';
+  h+='<label class="fld">Class<select id="asClass">'+classesOpts+'</select></label>';
+  h+='<label class="fld"><input type="checkbox" id="asAttend" style="width:auto;margin-right:6px">Mark as attended now</label>';
+  h+='</div>';
+  h+='<div id="asEventBlock" style="display:none">';
+  h+='<label class="fld">Name<input type="text" id="asTitle" placeholder="e.g. AI Workshop"></label>';
+  h+='<label class="fld">Note (optional — duration, fee paid, venue…)<input type="text" id="asNote" placeholder="e.g. 4 hrs · paid AED 300 separately"></label>';
+  h+='</div>';
+  h+='<div class="grid2"><label class="fld">Date<input type="date" id="asDate" value="'+isoOf(new Date())+'"></label>'+
+     '<label class="fld">Time<input type="time" id="asTime" value="17:00"></label></div>';
+  h+='<div class="sheet-actions"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="asSave" style="flex:1">Add</button></div>';
+  openSheet(h);
+  sheet.querySelector("[data-close]").onclick=closeSheet;
+  var ty=document.getElementById("asType");
+  ty.onchange=function(){
+    document.getElementById("asClassBlock").style.display=ty.value==="class"?"":"none";
+    document.getElementById("asEventBlock").style.display=ty.value==="event"?"":"none";
+  };
+  if(!classesOpts)ty.value="event";
+  ty.onchange();
+  sheet.querySelector("#asSave").onclick=function(){
+    var d=document.getElementById("asDate").value,t=document.getElementById("asTime").value;
+    if(!d){alert("Pick a date");return;}
+    if(ty.value==="event"){
+      var title=document.getElementById("asTitle").value.trim();
+      if(!title){alert("Enter a name for the activity");return;}
+      if(!state.events)state.events=[];
+      state.events.push({id:uid(),title:title,date:d,time:t,note:document.getElementById("asNote").value.trim(),color:"#8b5cf6"});
+    }else{
+      var cid=document.getElementById("asClass").value;
+      if(!cid){alert("Pick a class");return;}
+      state.attendance.push({id:uid(),classId:cid,date:d,time:t,status:document.getElementById("asAttend").checked?"attended":"scheduled",isExtra:true});
+    }
+    save();closeSheet();render();
+  };
+}
+function quickAttend(classId){addSessionSheet(classId);}
+function eventSheet(evId){
+  var ev=(state.events||[]).filter(function(e){return e.id===evId;})[0];if(!ev)return;
+  var h='<h3>One-time activity</h3>';
+  h+='<label class="fld">Name<input type="text" id="evTitle" value="'+esc(ev.title)+'"></label>';
+  h+='<div class="grid2"><label class="fld">Date<input type="date" id="evDate" value="'+esc(ev.date)+'"></label>'+
+     '<label class="fld">Time<input type="time" id="evTime" value="'+esc(ev.time||"")+'"></label></div>';
+  h+='<label class="fld">Note<input type="text" id="evNote" value="'+esc(ev.note||"")+'"></label>';
+  h+='<div class="sheet-actions"><button class="btn danger" id="evDel">Delete</button><button class="btn ghost" data-close>Cancel</button><button class="btn" id="evSave" style="flex:1">Save</button></div>';
+  openSheet(h);
+  sheet.querySelector("[data-close]").onclick=closeSheet;
+  sheet.querySelector("#evDel").onclick=function(){state.events=(state.events||[]).filter(function(e){return e.id!==evId;});save();closeSheet();render();};
+  sheet.querySelector("#evSave").onclick=function(){
+    var t=document.getElementById("evTitle").value.trim();if(!t){alert("Enter a name");return;}
+    ev.title=t;ev.date=document.getElementById("evDate").value;ev.time=document.getElementById("evTime").value;ev.note=document.getElementById("evNote").value.trim();
+    save();closeSheet();render();
+  };
+}
+function eventActions(evId){
+  var ev=(state.events||[]).filter(function(e){return e.id===evId;})[0];if(!ev)return;
+  var d=parseISO(ev.date);var status=ev.status||"scheduled";
+  var h='<h3>'+esc(ev.title)+' <span class="pill">One-time</span></h3>';
+  h+='<div class="muted small" style="margin-top:-8px;margin-bottom:12px">'+DAYSLONG[d.getDay()]+", "+d.getDate()+" "+MON[d.getMonth()]+(ev.time?" · "+fmtTime(ev.time):"")+'</div>';
+  h+='<div class="action-list">';
+  h+='<button data-ea="attend">✅ Mark attended</button>';
+  h+='<button data-ea="cancel">🚫 Cancel</button>';
+  if(status!=="scheduled")h+='<button data-ea="reset">↩️ Reset to scheduled</button>';
+  h+='<button data-ea="wa">💬 Share on WhatsApp<span class="sub">Message a parent/guardian about this</span></button>';
+  h+='<button data-ea="edit">✏️ Edit details</button>';
+  h+='<button data-ea="delete" style="color:#dc2626">🗑️ Delete</button>';
+  h+='</div>';
+  h+='<div class="sheet-actions"><button class="btn ghost block" data-close>Close</button></div>';
+  openSheet(h);
+  sheet.querySelectorAll("[data-ea]").forEach(function(b){b.onclick=function(){
+    var a=b.getAttribute("data-ea");
+    if(a==="attend"){ev.status="attended";save();closeSheet();render();}
+    else if(a==="cancel"){ev.status="cancelled";save();closeSheet();render();}
+    else if(a==="reset"){ev.status="scheduled";save();closeSheet();render();}
+    else if(a==="wa"){closeSheet();waEvent(ev);}
+    else if(a==="edit"){eventSheet(evId);}
+    else if(a==="delete"){state.events=(state.events||[]).filter(function(e){return e.id!==evId;});save();closeSheet();render();}
+  };});
+  sheet.querySelector("[data-close]").onclick=closeSheet;
+}
+function waEvent(ev){
+  var d=parseISO(ev.date);
+  var t=ev.title+" on "+DAYSLONG[d.getDay()]+" "+d.getDate()+" "+MON[d.getMonth()]+(ev.time?" at "+fmtTime(ev.time):"")+"."+(ev.note?"\n"+ev.note:"");
+  waText(t);
+}
+
+/* payment form */
+function paymentSheet(classId){
+  var c=classById(classId);
+  var h='<h3>Log payment · '+esc(c.name)+'</h3>';
+  h+='<div class="grid2">';
+  h+='<label class="fld">Amount<input type="number" id="pAmt" inputmode="decimal" placeholder="0"></label>';
+  h+='<label class="fld">Currency<select id="pCur">'+currencyOptions(c.currency)+'</select></label>';
+  h+='</div>';
+  if(c.feeType!=="monthly"){
+    h+='<div class="grid2">';
+    h+='<label class="fld">Type<select id="pType"><option value="prepaid"'+(c.feeType==="prepaid"?" selected":"")+'>Prepaid (buy classes)</option><option value="postpaid"'+(c.feeType==="postpaid"?" selected":"")+'>Postpaid (pay for taken)</option></select></label>';
+    h+='<label class="fld">Classes covered<input type="number" id="pCov" inputmode="numeric" placeholder="'+(c.packageSize||"")+'" value="'+(c.packageSize||"")+'"></label>';
+    h+='</div>';
+  }
+  h+='<label class="fld">Date<input type="date" id="pDate" value="'+isoOf(new Date())+'"></label>';
+  h+='<label class="fld">Note<input type="text" id="pNote" placeholder="e.g. July package"></label>';
+  h+='<div class="sheet-actions"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="pSave" style="flex:1">Save payment</button></div>';
+  // existing payments
+  var pays=state.payments.filter(function(p){return p.classId===classId;});
+  if(pays.length){
+    h+='<div style="margin-top:14px"><div class="muted small" style="font-weight:700;margin-bottom:6px">Logged payments</div>';
+    pays.slice().reverse().forEach(function(p){
+      h+='<div class="row small" style="padding:6px 0;border-top:1px solid var(--line)">'+
+         '<span>'+p.date+' · '+esc(p.type)+(p.classesCovered?" · "+p.classesCovered+" cls":"")+'</span><span class="spacer"></span>'+
+         '<b>'+money(p.amount,p.currency)+'</b> <button class="btn danger sm" data-delpay="'+p.id+'" style="margin-left:8px">✕</button></div>';
+    });
+    h+='</div>';
+  }
+  openSheet(h);
+  sheet.querySelector("[data-close]").onclick=closeSheet;
+  var pcur=document.getElementById("pCur");if(pcur)pcur.onchange=function(){if(pcur.value==="__add"){var v=addCurrencyPrompt();pcur.innerHTML=currencyOptions(v);}};
+  sheet.querySelectorAll("[data-delpay]").forEach(function(b){
+    b.onclick=function(){var id=b.getAttribute("data-delpay");state.payments=state.payments.filter(function(p){return p.id!==id;});save();paymentSheet(classId);};
+  });
+  sheet.querySelector("#pSave").onclick=function(){
+    var amt=parseFloat(document.getElementById("pAmt").value);
+    if(isNaN(amt)){alert("Enter an amount");return;}
+    var covEl=document.getElementById("pCov"),typeEl=document.getElementById("pType");
+    var cov=covEl?parseInt(covEl.value,10):NaN;
+    state.payments.push({id:uid(),classId:classId,date:document.getElementById("pDate").value,
+      amount:amt,currency:document.getElementById("pCur").value,
+      classesCovered:isNaN(cov)?null:cov,type:typeEl?typeEl.value:"monthly",
+      note:document.getElementById("pNote").value});
+    save();closeSheet();render();
+  };
+}
+
+/* class edit / add */
+function classSheet(classId,childId){
+  var isNew=!classId;
+  var c=isNew?{id:uid(),childId:childId,name:"",color:"#4f46e5",slots:[],feeType:"prepaid",currency:"AED",perClassFee:null,packageSize:null,startDate:null,active:true,notes:""}:JSON.parse(JSON.stringify(classById(classId)));
+  var h='<h3>'+(isNew?"Add class":"Edit class")+'</h3>';
+  h+='<label class="fld">Class name<input type="text" id="cName" value="'+esc(c.name)+'"></label>';
+  h+='<label class="fld">Child<select id="cChild">'+state.children.map(function(k){return '<option value="'+k.id+'"'+(k.id===c.childId?" selected":"")+'>'+esc(k.name)+'</option>';}).join("")+'</select></label>';
+  h+='<div class="grid2">';
+  h+='<label class="fld">Fee type<select id="cFee"><option value="prepaid"'+(c.feeType==="prepaid"?" selected":"")+'>Prepaid (block of classes)</option><option value="postpaid"'+(c.feeType==="postpaid"?" selected":"")+'>Postpaid (pay per class)</option><option value="monthly"'+(c.feeType==="monthly"?" selected":"")+'>Monthly (flat fee, no counting)</option><option value="free"'+(c.feeType==="free"?" selected":"")+'>Free</option></select></label>';
+  h+='<label class="fld">Currency<select id="cCur">'+currencyOptions(c.currency,true)+'</select></label>';
+  h+='</div>';
+  h+='<div class="grid2">';
+  h+='<label class="fld">Fee amount (per class, or per month if Monthly)<input type="number" id="cPcf" inputmode="decimal" value="'+(c.perClassFee==null?"":c.perClassFee)+'"></label>';
+  h+='<label class="fld">Package size<input type="number" id="cPkg" inputmode="numeric" value="'+(c.packageSize==null?"":c.packageSize)+'"></label>';
+  h+='</div>';
+  h+='<label class="fld">Classes already taken (carry-over from your old app)<input type="number" id="cOpen" inputmode="numeric" value="'+(c.openingTaken||"")+'" placeholder="0"></label>';
+  h+='<label class="fld">Where is it?<select id="cMode"><option value=""'+(!c.mode?" selected":"")+'>Not set</option><option value="inperson"'+(c.mode==="inperson"?" selected":"")+'>In person</option><option value="online"'+(c.mode==="online"?" selected":"")+'>Online</option></select></label>';
+  h+='<div id="cOnlineBlk">';
+  h+='<label class="fld">Online class link (Zoom / Meet)<input type="url" id="cLink" value="'+esc(c.link||"")+'" placeholder="https://…"></label>';
+  h+='<label class="fld">Login / password / meeting ID (optional)<input type="text" id="cLogin" value="'+esc(c.loginInfo||"")+'"></label>';
+  h+='</div>';
+  h+='<div id="cLocBlk">';
+  h+='<label class="fld">Location (address or place name)<input type="text" id="cLoc" value="'+esc(c.location||"")+'" placeholder="e.g. Dubai Sports World, Al Wasl"></label>';
+  h+='</div>';
+  h+='<label class="fld">How you usually pay for this class (personal note)<input type="text" id="cPayMode" value="'+esc(c.payMode||"")+'" placeholder="e.g. Bank transfer to coach, monthly"></label>';
+  h+='<label class="fld">If we cancel or the child is absent, is the class still counted?<select id="cCharge"><option value="no"'+(!c.chargeOnStudentCancel?" selected":"")+'>No — only counts if attended</option><option value="yes"'+(c.chargeOnStudentCancel?" selected":"")+'>Yes — counts even if we miss (e.g. group class)</option></select></label>';
+  h+='<label class="fld">Colour<input type="color" id="cColor" value="'+c.color+'" style="height:44px;padding:4px"></label>';
+  h+='<div class="muted small" style="font-weight:700;margin:12px 0 4px">Weekly schedule <span style="font-weight:400">(day · start · end time)</span></div>';
+  h+='<div id="slotWrap"></div>';
+  h+='<button class="btn line sm" id="addSlot" style="margin-top:4px">+ Add a day/time</button>';
+  h+='<label class="fld">Status<select id="cStatus"><option value="active"'+(c.active!==false?" selected":"")+'>Active</option><option value="off"'+(c.active===false?" selected":"")+'>Paused (hide from schedule, keep history)</option></select></label>';
+  h+='<label class="fld" style="margin-top:12px">Notes<textarea id="cNotes" rows="2">'+esc(c.notes||"")+'</textarea></label>';
+  h+='<div class="sheet-actions">';
+  if(!isNew)h+='<button class="btn danger" id="cDel">Delete</button>';
+  h+='<button class="btn ghost" data-close>Cancel</button><button class="btn" id="cSave" style="flex:1">Save</button></div>';
+  openSheet(h);
+  var ccur=document.getElementById("cCur");if(ccur)ccur.onchange=function(){if(ccur.value==="__add"){var v=addCurrencyPrompt();ccur.innerHTML=currencyOptions(v,true);}};
+  var cmode=document.getElementById("cMode");
+  function syncMode(){var mm=cmode.value;document.getElementById("cOnlineBlk").style.display=mm==="online"?"":"none";document.getElementById("cLocBlk").style.display=mm==="inperson"?"":"none";}
+  cmode.onchange=syncMode;syncMode();
+  var slots=c.slots?c.slots.slice():[];
+  function drawSlots(){
+    var w=document.getElementById("slotWrap");w.innerHTML="";
+    if(slots.length===0)w.innerHTML='<div class="tiny muted">No fixed schedule (good for ad-hoc classes like swimming).</div>';
+    slots.forEach(function(s,i){
+      var row=document.createElement("div");row.className="slotrow";
+      var sel=document.createElement("select");
+      for(var d=0;d<7;d++){var o=document.createElement("option");o.value=d;o.text=DAYSLONG[d];if(d===s.day)o.selected=true;sel.appendChild(o);}
+      sel.onchange=function(){slots[i].day=+sel.value;};
+      var tm=document.createElement("input");tm.type="time";tm.value=s.time||"";tm.title="Start";tm.onchange=function(){slots[i].time=tm.value;};
+      var toS=document.createElement("span");toS.className="tiny muted";toS.textContent="to";
+      var tm2=document.createElement("input");tm2.type="time";tm2.value=s.end||"";tm2.title="End";tm2.onchange=function(){slots[i].end=tm2.value;};
+      var del=document.createElement("button");del.className="btn danger sm";del.textContent="✕";
+      del.onclick=function(){slots.splice(i,1);drawSlots();};
+      row.appendChild(sel);row.appendChild(tm);row.appendChild(toS);row.appendChild(tm2);row.appendChild(del);w.appendChild(row);
+    });
+  }
+  drawSlots();
+  document.getElementById("addSlot").onclick=function(){slots.push({day:1,time:"17:00",end:"18:00"});drawSlots();};
+  sheet.querySelector("[data-close]").onclick=closeSheet;
+  if(!isNew)sheet.querySelector("#cDel").onclick=function(){
+    if(confirm("Delete "+c.name+"? Its payments and history stay but it won’t show on the schedule.")){
+      state.classes=state.classes.filter(function(x){return x.id!==c.id;});save();closeSheet();render();
+    }
+  };
+  sheet.querySelector("#cSave").onclick=function(){
+    var name=document.getElementById("cName").value.trim();
+    if(!name){alert("Enter a class name");return;}
+    var pcf=parseFloat(document.getElementById("cPcf").value);
+    var pkg=parseInt(document.getElementById("cPkg").value,10);
+    var obj={id:c.id,childId:document.getElementById("cChild").value,name:name,
+      color:document.getElementById("cColor").value,slots:slots,
+      feeType:document.getElementById("cFee").value,currency:document.getElementById("cCur").value,
+      perClassFee:isNaN(pcf)?null:pcf,packageSize:isNaN(pkg)?null:pkg,startDate:c.startDate||null,
+      openingTaken:(parseInt(document.getElementById("cOpen").value,10)||0),
+      link:document.getElementById("cLink").value.trim(),loginInfo:document.getElementById("cLogin").value.trim(),
+      payMode:document.getElementById("cPayMode").value.trim(),
+      chargeOnStudentCancel:document.getElementById("cCharge").value==="yes",
+      mode:document.getElementById("cMode").value,location:document.getElementById("cLoc").value.trim(),
+      active:document.getElementById("cStatus").value==="active",notes:document.getElementById("cNotes").value};
+    if(isNew)state.classes.push(obj);
+    else{var idx=state.classes.findIndex(function(x){return x.id===c.id;});state.classes[idx]=obj;}
+    save();closeSheet();render();
+  };
+}
+
+/* child add */
+function childSheet(childId){
+  var isNew=!childId;
+  var ch=isNew?{id:uid(),name:"",age:"",type:"child",gender:"",dob:"",photo:"",emoji:"🧒"}:JSON.parse(JSON.stringify(childById(childId)));
+  var h='<h3>'+(isNew?"Add a person":"Edit "+esc(ch.name||"person"))+'</h3>';
+  h+='<label class="fld">Name<input type="text" id="kName" value="'+esc(ch.name||"")+'" placeholder="e.g. your name or your child’s name"></label>';
+  h+='<label class="fld">Adult or child?<select id="kType"><option value="child"'+(ch.type!=="adult"?" selected":"")+'>Child</option><option value="adult"'+(ch.type==="adult"?" selected":"")+'>Adult</option></select></label>';
+  h+='<label class="fld">Date of birth (optional — age updates automatically)<input type="date" id="kDob" value="'+esc(ch.dob||"")+'"></label>';
+  h+='<label class="fld">Gender (optional — sets a default icon)<select id="kGender"><option value=""'+(!ch.gender?" selected":"")+'>Not set</option><option value="male"'+(ch.gender==="male"?" selected":"")+'>Male</option><option value="female"'+(ch.gender==="female"?" selected":"")+'>Female</option></select></label>';
+  h+='<label class="fld">Photo (optional — becomes the icon)<input type="file" id="kPhoto" accept="image/*"></label>';
+  h+='<div id="kPhotoPrev">'+(ch.photo?'<img class="avatar lg" src="'+ch.photo+'"> <button class="btn line sm" id="kPhotoDel">Remove photo</button>':"")+'</div>';
+  h+='<div class="sheet-actions">';
+  if(!isNew)h+='<button class="btn danger" id="kDel">Delete</button>';
+  h+='<button class="btn ghost" data-close>Cancel</button><button class="btn" id="kSave" style="flex:1">Save</button></div>';
+  openSheet(h);
+  var photoData=ch.photo||"";
+  sheet.querySelector("[data-close]").onclick=closeSheet;
+  var delp=document.getElementById("kPhotoDel");if(delp)delp.onclick=function(){photoData="";document.getElementById("kPhotoPrev").innerHTML='<span class="tiny muted">Photo removed</span>';};
+  document.getElementById("kPhoto").onchange=function(e){
+    var f=e.target.files[0];if(!f)return;
+    resizeImage(f,160,function(dataUrl){photoData=dataUrl;document.getElementById("kPhotoPrev").innerHTML='<img class="avatar lg" src="'+dataUrl+'">';});
+  };
+  if(!isNew){var kd=document.getElementById("kDel");if(kd)kd.onclick=function(){
+    if(confirm("Remove "+ch.name+"? Their classes and history will also be removed.")){
+      state.children=state.children.filter(function(x){return x.id!==ch.id;});
+      state.classes=state.classes.filter(function(x){return x.childId!==ch.id;});
+      save();closeSheet();render();
+    }
+  };}
+  document.getElementById("kSave").onclick=function(){
+    var n=document.getElementById("kName").value.trim();if(!n){alert("Enter a name");return;}
+    ch.name=n;ch.type=document.getElementById("kType").value;ch.dob=document.getElementById("kDob").value||"";ch.gender=document.getElementById("kGender").value;ch.photo=photoData;
+    if(!ch.emoji)ch.emoji="🧒";
+    if(isNew)state.children.push(ch);
+    else{var idx=state.children.findIndex(function(x){return x.id===ch.id;});state.children[idx]=ch;}
+    save();closeSheet();render();
+  };
+}
+
+/* history */
+function historySheet(classId){
+  var c=classById(classId);
+  var recs=state.attendance.filter(function(a){return a.classId===classId;}).sort(function(x,y){return y.date.localeCompare(x.date);});
+  var h='<h3>History · '+esc(c.name)+'</h3>';
+  if(recs.length===0)h+='<div class="empty">No sessions logged yet.</div>';
+  recs.forEach(function(a){
+    var d=parseISO(a.date);
+    h+='<div class="row small" style="padding:8px 0;border-top:1px solid var(--line)">'+
+       '<span>'+fmtDateShort(d)+(a.time?" · "+fmtTime(a.time):"")+'</span><span class="spacer"></span>'+
+       '<span class="pill '+(a.status==="attended"?"green":a.status==="cancelled"?"red":a.status==="moved"?"amber":"slate")+'">'+a.status+'</span></div>';
+  });
+  h+='<div class="sheet-actions"><button class="btn line" id="hWa">💬 Send attended log</button><button class="btn ghost" data-close style="flex:1">Close</button></div>';
+  openSheet(h);
+  sheet.querySelector("[data-close]").onclick=closeSheet;
+  var hw=document.getElementById("hWa");if(hw)hw.onclick=function(){closeSheet();waAttendedLog(classId);};
+}
+
+/* backup / restore */
+function doBackup(){
+  var blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download="kidule-backup-"+isoOf(new Date())+".json";a.click();
+}
+/* Checks that a restored file actually looks like a Kidule backup
+   before we let it replace everything on this device. */
+function looksLikeBackup(d){
+  if(!d||typeof d!=="object")return false;
+  var lists=["children","classes","attendance","payments"];
+  for(var i=0;i<lists.length;i++){
+    if(!Array.isArray(d[lists[i]]))return false;      // each must be a list, even if empty
+  }
+  for(var j=0;j<d.children.length;j++){
+    var c=d.children[j];
+    if(!c||typeof c!=="object"||!c.id||!c.name)return false;  // each child needs an id+name
+  }
+  for(var k=0;k<d.classes.length;k++){
+    var cl=d.classes[k];
+    if(!cl||typeof cl!=="object"||!cl.id||!cl.childId)return false; // each class needs an id + owner
+  }
+  return true;
+}
+function doRestore(){
+  var inp=document.createElement("input");inp.type="file";inp.accept=".json,application/json";
+  inp.onchange=function(){var f=inp.files[0];if(!f)return;var r=new FileReader();
+    r.onload=function(){
+      var d;
+      try{d=JSON.parse(r.result);}catch(e){alert("Could not read this file — it isn't valid JSON.");return;}
+      if(!looksLikeBackup(d)){alert("This doesn't look like a Kidule backup file, so nothing was changed.");return;}
+      if(!confirm("Restore this backup? It will replace everything currently on this device."))return;
+      if(!d.currencies)d.currencies=[];if(!d.events)d.events=[];
+      state=d;save();render();alert("Restored.");
+    };
+    r.readAsText(f);};
+  inp.click();
+}
+
+/* Delete attendance & payment records older than 1 year, to keep
+   on-device storage small. Children, classes and current balances
+   are never touched — this only trims old history rows. */
+function oldDataCutoff(){var d=new Date();d.setFullYear(d.getFullYear()-1);return isoOf(d);}
+function countOldData(){
+  var cutoff=oldDataCutoff();
+  var att=state.attendance.filter(function(a){return a.date&&a.date<cutoff;}).length;
+  var pay=state.payments.filter(function(p){return p.date&&p.date<cutoff;}).length;
+  return {att:att,pay:pay,cutoff:cutoff};
+}
+function purgeOldDataSheet(){
+  var n=countOldData();
+  var total=n.att+n.pay;
+  var h='<h3>Delete old data</h3>';
+  if(total===0){
+    h+='<div class="small muted">No attendance or payment records older than 1 year ('+fmtDateShort(parseISO(n.cutoff))+') were found. Nothing to delete.</div>';
+    h+='<div class="sheet-actions"><button class="btn ghost block" data-close>Close</button></div>';
+    openSheet(h);sheet.querySelector("[data-close]").onclick=closeSheet;return;
+  }
+  h+='<div class="small">This removes attendance and payment history dated before <b>'+fmtDateShort(parseISO(n.cutoff))+'</b>:</div>';
+  h+='<div class="kv" style="margin-top:8px"><span>Attendance records</span><b>'+n.att+'</b></div>';
+  h+='<div class="kv"><span>Payment records</span><b>'+n.pay+'</b></div>';
+  h+='<div class="tiny muted" style="margin-top:8px">Children, classes and anything newer than 1 year are not touched. This cannot be undone — take a backup first if you want to keep a copy.</div>';
+  h+='<div class="sheet-actions"><button class="btn ghost" data-close>Cancel</button><button class="btn danger" id="pdGo" style="flex:1">Delete '+total+' old record'+(total>1?"s":"")+'</button></div>';
+  openSheet(h);
+  sheet.querySelector("[data-close]").onclick=closeSheet;
+  sheet.querySelector("#pdGo").onclick=function(){
+    var cutoff=n.cutoff;
+    state.attendance=state.attendance.filter(function(a){return !(a.date&&a.date<cutoff);});
+    state.payments=state.payments.filter(function(p){return !(p.date&&p.date<cutoff);});
+    save();closeSheet();render();alert("Old data deleted.");
+  };
+}
+
+function renewPack(classId){
+  var c=classById(classId);var pre=c.feeType==="prepaid";
+  var h='<h3>'+(pre?"Start a new pack · ":"Reset count · ")+esc(c.name)+'</h3>';
+  h+='<div class="tiny muted" style="margin-top:-8px;margin-bottom:10px">'+(pre?"Resets the counter to a fresh pack.":"Starts the taken/unpaid count fresh from this date.")+' Past classes and payments stay in history. Uncheck the payment box if you already logged it.</div>';
+  if(pre)h+='<div class="grid2"><label class="fld">Classes in this pack<input type="number" id="npSize" inputmode="numeric" value="'+(c.packageSize||12)+'"></label>'+
+     '<label class="fld">Pack start date<input type="date" id="npDate" value="'+isoOf(new Date())+'"></label></div>';
+  else h+='<label class="fld">Count from date<input type="date" id="npDate" value="'+isoOf(new Date())+'"></label>';
+  h+='<label class="fld"><input type="checkbox" id="npPay"'+(pre?" checked":"")+' style="width:auto;margin-right:6px">Also log a payment</label>';
+  h+='<div id="npPayBlk"'+(pre?"":' style="display:none"')+'><div class="grid2"><label class="fld">Amount paid<input type="number" id="npAmt" inputmode="decimal" value="'+((pre&&c.perClassFee&&c.packageSize)?c.perClassFee*c.packageSize:"")+'"></label>'+
+     '<label class="fld">Currency<select id="npCur">'+currencyOptions(c.currency)+'</select></label></div>'+
+     (pre?"":'<label class="fld">Classes this payment covers (optional)<input type="number" id="npCov" inputmode="numeric"></label>')+'</div>';
+  h+='<div class="sheet-actions"><button class="btn ghost" data-close>Cancel</button><button class="btn" id="npSave" style="flex:1">'+(pre?"Start pack":"Reset count")+'</button></div>';
+  openSheet(h);
+  sheet.querySelector("[data-close]").onclick=closeSheet;
+  var npCur=document.getElementById("npCur");if(npCur)npCur.onchange=function(){if(npCur.value==="__add"){var v=addCurrencyPrompt();npCur.innerHTML=currencyOptions(v);}};
+  var npPay=document.getElementById("npPay");npPay.onchange=function(){document.getElementById("npPayBlk").style.display=npPay.checked?"":"none";};
+  sheet.querySelector("#npSave").onclick=function(){
+    var d=document.getElementById("npDate").value||isoOf(new Date());
+    if(pre){var size=parseInt(document.getElementById("npSize").value,10);
+      if(isNaN(size)||size<=0){alert("Enter the number of classes in the pack");return;}
+      c.cycleStart=d;c.cycleSize=size;}
+    else{c.cycleStart=d;c.cycleSize=null;}
+    if(document.getElementById("npPay").checked){
+      var amt=parseFloat(document.getElementById("npAmt").value);
+      if(!isNaN(amt)){
+        var cov=pre?c.cycleSize:parseInt((document.getElementById("npCov")||{}).value,10);
+        state.payments.push({id:uid(),classId:classId,date:d,amount:amt,currency:document.getElementById("npCur").value,classesCovered:isNaN(cov)?null:cov,type:c.feeType,note:pre?"New pack":"Settlement"});
+      }
+    }
+    save();closeSheet();render();
+  };
+}
+
+function spendingReport(year){
+  var pays=(state.payments||[]).filter(function(p){return p.amount;});
+  var years=[];pays.forEach(function(p){var y=(p.date||"").slice(0,4);if(y&&years.indexOf(y)<0)years.push(y);});
+  years.sort();
+  if(!year)year="all";
+  var filt=year==="all"?pays:pays.filter(function(p){return (p.date||"").slice(0,4)===year;});
+  function fmtC(obj){var ks=Object.keys(obj);return ks.length?ks.map(function(k){return k+" "+Number(obj[k]).toLocaleString();}).join(" · "):"—";}
+  var h='<h3>Spending report</h3>';
+  h+='<div class="child-tab" style="flex-wrap:wrap"><button data-yr="all" class="'+(year==="all"?"on":"")+'">All time</button>';
+  years.forEach(function(y){h+='<button data-yr="'+y+'" class="'+(year===y?"on":"")+'">'+y+'</button>';});
+  h+='</div>';
+  var grand={};filt.forEach(function(p){grand[p.currency]=(grand[p.currency]||0)+(+p.amount||0);});
+  h+='<div class="card"><div class="body"><div class="totline"><span style="font-weight:700">Total spent</span><b>'+fmtC(grand)+'</b></div></div></div>';
+  var shown=0;
+  state.children.forEach(function(ch){
+    var chPays=filt.filter(function(p){var c=classById(p.classId);return c&&c.childId===ch.id;});
+    if(!chPays.length)return;
+    shown+=chPays.length;
+    var chTot={};chPays.forEach(function(p){chTot[p.currency]=(chTot[p.currency]||0)+(+p.amount||0);});
+    h+='<h2 class="section">'+childIcon(ch)+" "+esc(ch.name)+' · '+fmtC(chTot)+'</h2>';
+    state.classes.filter(function(c){return c.childId===ch.id;}).forEach(function(c){
+      var cPays=chPays.filter(function(p){return p.classId===c.id;});
+      if(!cPays.length)return;
+      var cTot={};cPays.forEach(function(p){cTot[p.currency]=(cTot[p.currency]||0)+(+p.amount||0);});
+      h+='<div class="kv" style="padding:7px 2px;border-bottom:1px solid var(--line)"><span>'+esc(c.name)+' <span class="tiny muted">('+cPays.length+" payment"+(cPays.length>1?"s":"")+')</span></span><b>'+fmtC(cTot)+'</b></div>';
+    });
+  });
+  var orphan=filt.filter(function(p){return !classById(p.classId);});
+  if(orphan.length){var oTot={};orphan.forEach(function(p){oTot[p.currency]=(oTot[p.currency]||0)+(+p.amount||0);});
+    h+='<h2 class="section">Removed classes · '+fmtC(oTot)+'</h2>';}
+  if(!shown&&!orphan.length)h+='<div class="empty">No payments logged'+(year==="all"?" yet":" in "+year)+'.</div>';
+  h+='<div class="sheet-actions"><button class="btn ghost block" data-close>Close</button></div>';
+  openSheet(h);
+  sheet.querySelectorAll("[data-yr]").forEach(function(b){b.onclick=function(){spendingReport(b.getAttribute("data-yr"));};});
+  sheet.querySelector("[data-close]").onclick=closeSheet;
+}
+
+function renderKid(){
+  var ws=current.weekStart;var start=parseISO(ws);var end=addDays(start,6);var byDay=weekSessions(ws);var todayIso=isoOf(new Date());
+  var h='<div id="kidTitle" style="padding:8px 0 2px;font-weight:700;font-size:18px">This week\u2019s classes</div>';
+  h+='<div class="weeknav"><button class="btn ghost sm" data-week="-1">\u2039</button><div class="label">'+start.getDate()+" "+MON[start.getMonth()]+" \u2013 "+end.getDate()+" "+MON[end.getMonth()]+'</div><button class="btn ghost sm" data-week="1">\u203a</button></div>';
+  h+='<div class="row" style="margin-bottom:6px"><button class="btn line sm" data-week="0">This week</button></div>';
+  var anyWeek=false;
+  for(var i=0;i<7;i++){
+    var date=addDays(start,i);var diso=isoOf(date);var isToday=diso===todayIso;
+    if(byDay[i].length===0)continue;anyWeek=true;
+    h+='<div class="daygroup"><div class="dayhead'+(isToday?" today":"")+'">'+(isToday?'<span class="dot"></span>':"")+'<span class="dname">'+DAYSLONG[date.getDay()]+'</span><span class="muted small">'+date.getDate()+" "+MON[date.getMonth()]+(isToday?" \u00b7 Today":"")+'</span></div>';
+    byDay[i].forEach(function(s){
+      if(s.kind==="event"){var ev=s.event;var eb=ev.status==="cancelled"?'<span class="pill red">Off</span>':ev.status==="attended"?'<span class="pill green">Done</span>':'<span class="pill">One-time</span>';
+        h+='<div class="sess'+(ev.status==="cancelled"?" cancelled":"")+'" style="cursor:default"><div class="stripe" style="background:'+(ev.color||"#8b5cf6")+'"></div><div class="time">'+(ev.time?fmtTime(ev.time):"\u2014")+'</div><div style="flex:1"><div style="font-weight:600">'+esc(ev.title)+'</div></div><div>'+eb+'</div></div>';return;}
+      var c=classById(s.classId);var ch=childById(c.childId);
+      var badge=s.status==="attended"?'<span class="pill green">\u2713</span>':s.status==="cancelled"?'<span class="pill red">Class off</span>':s.status==="missed"?'<span class="pill amber">Absent</span>':s.status==="moved"?'<span class="pill amber">Moved</span>':"";
+      var quick=(c.link?'<a class="btn sm joinbtn" href="'+esc(c.link)+'" target="_blank" rel="noopener">Join</a>':"")+(c.location?'<a class="btn line sm joinbtn" href="'+mapUrl(c.location)+'" target="_blank" rel="noopener">\ud83d\udccd</a>':"");
+      h+='<div class="sess'+(s.status==="cancelled"?" cancelled":"")+(s.status==="attended"?" done":"")+'" style="cursor:default"><div class="stripe" style="background:'+c.color+'"></div><div class="time">'+(s.time?fmtTime(s.time):"\u2014")+'</div><div style="flex:1"><div style="font-weight:600">'+esc(c.name)+'</div><div class="who">'+childIcon(ch)+" "+esc(ch.name)+'</div></div>'+(quick?'<div class="row" style="gap:6px;flex:0 0 auto">'+quick+'</div>':"")+'<div>'+badge+'</div></div>';
+    });
+    h+='</div>';
+  }
+  if(!anyWeek)h+='<div class="empty">No classes scheduled this week.</div>';
+  h+='<div class="tiny muted" style="margin-top:10px">View only \u00b7 tap Join to enter an online class.</div>';
+  return h;
+}
+
+/* ---------------- event binding ---------------- */
+function bindView(){
+  var v=document.getElementById("view");
+  var kt=document.getElementById("kidTitle");
+  if(kt){var _kn=0;kt.onclick=function(){_kn++;if(_kn>=5){_kn=0;if(confirm("Exit kid mode on this device and show the full app?")){try{localStorage.removeItem("ct_kidlock");}catch(e){} location.reload();}}};}
+  v.querySelectorAll("[data-week]").forEach(function(b){b.onclick=function(){
+    var d=b.getAttribute("data-week");
+    if(d==="0")current.weekStart=isoOf(weekStart(new Date()));
+    else current.weekStart=isoOf(addDays(parseISO(current.weekStart),+d*7));
+    render();
+  };});
+  var addS=document.getElementById("addSess");if(addS)addS.onclick=function(){addSessionSheet();};
+  v.querySelectorAll("[data-open-sess]").forEach(function(el){el.onclick=function(){
+    var p=el.getAttribute("data-open-sess").split("|");sessionActions(p[0],p[1],p[2],p[3]);
+  };});
+  v.querySelectorAll("[data-open-event]").forEach(function(el){el.onclick=function(){eventActions(el.getAttribute("data-open-event"));};});
+  v.querySelectorAll("[data-stop]").forEach(function(a){a.addEventListener("click",function(e){e.stopPropagation();});});
+  v.querySelectorAll("[data-childfilter]").forEach(function(b){b.onclick=function(){
+    var p=b.getAttribute("data-childfilter").split("|");current[p[0]]=p[1];render();
+  };});
+  v.querySelectorAll("[data-edit-class]").forEach(function(b){b.onclick=function(){classSheet(b.getAttribute("data-edit-class"));};});
+  v.querySelectorAll("[data-add-class]").forEach(function(b){b.onclick=function(){classSheet(null,b.getAttribute("data-add-class"));};});
+  v.querySelectorAll("[data-pay-class]").forEach(function(b){b.onclick=function(){paymentSheet(b.getAttribute("data-pay-class"));};});
+  v.querySelectorAll("[data-quick-attend]").forEach(function(b){b.onclick=function(){quickAttend(b.getAttribute("data-quick-attend"));};});
+  v.querySelectorAll("[data-history]").forEach(function(b){b.onclick=function(){historySheet(b.getAttribute("data-history"));};});
+  v.querySelectorAll("[data-reactivate]").forEach(function(b){b.onclick=function(){var c=classById(b.getAttribute("data-reactivate"));c.active=true;save();render();};});
+  v.querySelectorAll("[data-newpack]").forEach(function(b){b.onclick=function(){renewPack(b.getAttribute("data-newpack"));};});
+  v.querySelectorAll("[data-edit-child]").forEach(function(b){b.onclick=function(){childSheet(b.getAttribute("data-edit-child"));};});
+  var ac=document.getElementById("addChild");if(ac)ac.onclick=function(){childSheet();};
+  var sr=document.getElementById("spendReport");if(sr)sr.onclick=function(){spendingReport("all");};
+  var bk=document.getElementById("btnBackup");if(bk)bk.onclick=doBackup;
+  var rs=document.getElementById("btnRestore");if(rs)rs.onclick=doRestore;
+  var rt=document.getElementById("btnReset");if(rt)rt.onclick=function(){if(confirm("Reset everything back to the original setup? This erases your changes."))( function(){state=seed();save();render();} )();};
+}
+document.querySelectorAll("nav.tabbar button").forEach(function(b){b.onclick=function(){
+  current.tab=b.getAttribute("data-tab");
+  document.querySelectorAll("nav.tabbar button").forEach(function(x){x.classList.remove("on");});
+  b.classList.add("on");render();
+};});
+document.getElementById("btnBackupTop").onclick=function(){
+  var h='<h3>Menu</h3><div class="action-list">'+
+    '<button id="m_kid">👀 Read-only week view<span class="sub">A simple, no-editing list of this week — handy to show a child</span></button>'+
+    '<button id="m_bk">⬇ Backup to file<span class="sub">Save a copy you can restore later</span></button>'+
+    '<button id="m_rs">⬆ Restore from file</button>'+
+    '<button id="m_purge">🧹 Delete old data<span class="sub">Remove attendance/payment history older than 1 year</span></button>'+
+    '<button id="m_help">❓ Help / FAQ</button></div>'+
+    '<div class="tiny muted" style="margin-top:6px">Your data is saved automatically in this browser on this device. Back up before clearing browser data or switching phones.</div>'+
+    '<div class="sheet-actions"><button class="btn ghost block" data-close>Close</button></div>';
+  openSheet(h);
+  sheet.querySelector("[data-close]").onclick=closeSheet;
+  sheet.querySelector("#m_kid").onclick=function(){kidView();};
+  sheet.querySelector("#m_bk").onclick=function(){doBackup();};
+  sheet.querySelector("#m_rs").onclick=function(){doRestore();};
+  sheet.querySelector("#m_purge").onclick=function(){purgeOldDataSheet();};
+  sheet.querySelector("#m_help").onclick=function(){helpSheet();};
+};
+
+function helpSheet(){
+  var h='<h3>Help / FAQ</h3><div class="small" style="line-height:1.6">';
+  h+='<p><b>What is the "Read-only week view" (kid mode)?</b><br>'+
+     'It\u2019s a simplified screen that only shows this week\u2019s classes — no editing, no money info, no menu. '+
+     'Open it from this menu, or by adding <code>?kid</code> to the app\u2019s address. '+
+     'Great for handing your phone to a child or a caregiver so they can check the schedule without changing anything.</p>';
+  h+='<p><b>How do I get back to the full app after locking kid view?</b><br>'+
+     'Tap the "This week\u2019s classes" title 5 times in a row and confirm — that exits kid mode on this device.</p>';
+  h+='<p><b>Is my data backed up anywhere online?</b><br>'+
+     'No. Everything is stored only in this browser, on this device. Use "Backup to file" regularly, and especially before '+
+     'clearing browser data, switching phones, or reinstalling the app.</p>';
+  h+='<p><b>What does "Delete old data" remove?</b><br>'+
+     'Only attendance and payment history older than 1 year. Children, classes and recent history are never touched, and it can\u2019t be undone — back up first.</p>';
+  h+='</div>';
+  h+='<div class="sheet-actions"><button class="btn ghost block" data-close>Close</button></div>';
+  openSheet(h);
+  sheet.querySelector("[data-close]").onclick=closeSheet;
+}
+
+/* ---------------- migration banner ----------------
+   One-time (snoozable) notice telling testers to back up
+   before the app's hosting address changes. Uses its own
+   localStorage key so it never touches app data or backups. */
+function migrateBannerInit(){
+  var MBK="kidule_migrate_banner_v1";
+  var el=document.getElementById("migrateBanner");
+  if(!el||KID)return;   // never show in kid mode
+  var st=null;
+  try{var raw=localStorage.getItem(MBK);st=raw?JSON.parse(raw):null;}catch(e){}
+  var now=Date.now();
+  if(st&&(st.dismissed||(st.snoozeUntil&&now<st.snoozeUntil)))return;
+  el.style.display="flex";
+  document.getElementById("mb_backup").onclick=function(){
+    doBackup();
+    try{localStorage.setItem(MBK,JSON.stringify({dismissed:true}));}catch(e){}
+    el.style.display="none";
+  };
+  document.getElementById("mb_later").onclick=function(){
+    try{localStorage.setItem(MBK,JSON.stringify({snoozeUntil:now+24*60*60*1000}));}catch(e){}
+    el.style.display="none";
+  };
+  document.getElementById("mb_close").onclick=function(){
+    try{localStorage.setItem(MBK,JSON.stringify({dismissed:true}));}catch(e){}
+    el.style.display="none";
+  };
+}
+
+/* ---------------- boot ---------------- */
+load();
+if(KID)document.body.classList.add("kidmode");
+render();
+migrateBannerInit();
+
+/* offline support */
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){});});}
+</script>
+</body>
+</html>
